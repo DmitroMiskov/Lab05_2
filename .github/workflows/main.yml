@@ -1,17 +1,15 @@
-name: UI Tests
+name: Selenium UI Tests
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+  repository_dispatch:
+    types: [run-ui-tests]
 
 jobs:
   ui-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout UI test repo
         uses: actions/checkout@v4
 
       - name: Setup .NET
@@ -19,7 +17,7 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Install Chrome (via Google APT repo)
+      - name: Install Chrome (Ubuntu 24.04)
         run: |
           sudo apt-get update
           sudo apt-get install -y wget unzip xvfb libxi6 libnss3 libasound2t64
@@ -29,13 +27,16 @@ jobs:
           sudo apt-get install -y google-chrome-stable
           google-chrome --version
 
+      - name: Log trigger info
+        run: echo "Triggered from ${{ github.event.client_payload.source }} at commit ${{ github.event.client_payload.commit }} on branch ${{ github.event.client_payload.branch }}"
+
       - name: Restore dependencies
         run: dotnet restore UiTest/UiTest/UiTest.sln
 
       - name: Build project
         run: dotnet build UiTest/UiTest/UiTest.sln --no-restore
 
-      - name: Run UI tests (headless Chrome)
+      - name: Run Selenium tests
         run: dotnet test UiTest/UiTest/UiTest.sln --logger "trx;LogFileName=test-results.trx"
 
       - name: Upload test results
