@@ -1,3 +1,5 @@
+name: UI Tests
+
 on:
   push:
     branches: ["main"]
@@ -28,13 +30,13 @@ jobs:
           google-chrome --version
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore UiTestsSaucedemo/UiTestsSaucedemo.sln
 
       - name: Build project
-        run: dotnet build --no-restore
+        run: dotnet build UiTestsSaucedemo/UiTestsSaucedemo.sln --no-restore
 
       - name: Run UI tests (headless Chrome)
-        run: dotnet test --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test UiTestsSaucedemo/UiTestsSaucedemo.sln --logger "trx;LogFileName=test-results.trx"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
