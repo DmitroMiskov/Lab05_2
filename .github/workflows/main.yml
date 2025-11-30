@@ -20,7 +20,7 @@ jobs:
       - name: Install Chrome (via Google APT repo)
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip xvfb libxi6 libnss3 libasound2
+          sudo apt-get install -y wget unzip xvfb libxi6 libnss3 libasound2t64
           wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
           echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
           sudo apt-get update
